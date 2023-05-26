@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+
+        <meta name="author" content="Matthew Horan">
+        
+        <meta name="description" content="Helpful VBA code I've learned overtime.">
+
+        <title>VBA code for Microsoft Excel</title>
+        <link rel="stylesheet" href="main.css" type="text/css">
+    </head>
+
+    <body>
+        <h1>Helpful Microsoft Excel VBA Code I've learned overtime</h1>
+
+        <hr>    
+        <br>
+        <main>
+        <h3>Create a list of file names in a folder using the first 5 characters:</h3>  
+        <br>    
+<p>'The folderPath vairable needs to be updated to equal the actual path to the folder containing the files needing to be processed.</p>
+<p>'The file type such as .xlsx or .txt needs to be adjusted depending on which file types are in your folder.</p>
+<br> 
+
+<p>Sub AddFileNameToCell()</p>
+<p>Dim filderPath As String</p>
+<p>Dim fileExtention As String</p>
+<p>Dim fileName As String</p>
+<p>Dim cell As Range</p>
+<p>Dim filesInFolder As Object</p>
+<p>Dim i As Integer</p>
+<br> 
+<p>'Below here is where you will need to change the file path and or file type (.txt) if different. Note the \ at the end is essential.</p>
+<p>fodlerPath = "C:YourFolderPath\"</p>
+<p>fileExtension = ".txt"</p>
+<br>
+<p>'Below here is the range for the first cell where names will be included. Changes as needed.</p>
+<p>Set cell = Range("A1")</p>
+<br>
+<p>'The code below here will clear all of Column A so data doesn't overlap. You may want to change this if you have other data in this column.</p>
+<p>Range("A:A").ClearContents</p>
+<br>
+<p>'The code below here will get the files in the folder.</p>
+<p>Set filesInFolder = CreateObject("Scripting.FileSystemObject").GetFolder(folderPath).FIles</p>
+<br>
+<p>'The code below here will loop through each of the files and add the first 5 characters of the file name to the cell.</p>
+<p>For Each fileItem In filesInFolder</p>
+<p>If Right(fileItem.Name, Len(FileExtension)) = fileExtension Then</p>
+<p>fileName = Left(fileItem.name, 5)</p>
+<p>cell.Value = fileName</p>
+<p>Set cell = cell.offset(1)</p>
+<p>End If</p>
+<p>Next fileItem</p>
+<p>End Sub</p>
+
+<hr>    
+<br>
+<h3>This code allows you to set the variable &#8220;folderPath&#8221; to the path of a folder the user chooses.</h3>
+<h3>This is particularly useful if you want the user to select the folder they will be saving a document to.</h3>
+<p>Dim folderPath As String</p>
+<p>Dim objShell As Object, objFolder As Object</p>
+<br>
+<p>Set objShell = CreateObject("Shell.Application")</p>
+<p>Set objFolder = objShell.BrowseForFolder(0, "Select a folder", 0, 0)</p>
+<br>
+<p>If Not objFolder Is Nothing Then</p>
+<p>folderPath = objFolder.Self.Path</p>
+<p>End If</p>
+<br>
+<p>End Sub</p>
+
+<hr>    
+<br>
+<h3>The Following code will set the variable LastRow equal to the number of cells containing data.</h3>
+<h3>This is useful if the amount of data changes and you want the code to stop a loop or do something after reaching a
+    certain number of rows of data.</h3>
+<br>
+<p>'In the below code you may need to change the worksheet from Sheet1 to the sheet you are working in and or change the column if 
+    A is not the column you want counted.</p>
+<p>Dim LastRow As Long</p>
+<p>LastRow = Worksheets("Sheet1").Cells(Rows.Count, "A").End(xlUp).Row</p>
+<p>End Sub</p>
+
+<hr>    
+<br>
+<h3>The following code can be used to clear all contents below a set row value.</h3>
+<br>
+<p>'You will want to change the Sheet from 1 to whatever your Sheet is and Row from 10 to whatever Row you want to start clearing from.</p>
+<p>Worksheets("sheet1").Rows(10:10).Select</p>
+<p>Range(Selection, Selection.End(xlDown)).Select</p>
+<p>Selection.ClearContents</p>
+<p>End Sub</p>
+
+<hr>    
+<br>
+<h3>How to use VBA to first enter in a few values using the Row and Column Formula then autofilling to ten.</h3>
+<br>
+<p>'Change the worksheet, Range, formula, and or Autofill range as needed. The Autofill can go all the way to the bottom row.</p>
+<p>Worksheets("Sheet1").Range("A1").Formula2R1C1 = "1"</p>
+<p>Worksheets("Sheet1").Range("A2").Formula2R1C1 = "2"</p>
+<p>Worksheets("Sheet1").Range("A1:A2").Select</p>
+<p>Selection.AutoFill Destination:=Range("A1:A10")</p>
+<p>End Sub</p>
+
+<hr>    
+<br>
+<h3>The following code counts the number of rows at a starting point with data in a specific workbook and sets them equal to the Variable RowLen</h3>
+<h3>This is useful for knowing how many empty spaces you need to make prior to copying data over from another workbook.</h3>
+<br>
+
+<p>Sub CountSpaces</p>
+<p>Dim RowLen As Long</p>
+<p>Dim SourceFile As Workbook</p>
+<p>Dim i As Long</p>
+<p>Dim FilePath As String</p>
+<p>Dim BlankRows As Long</p>
+<br>
+<p>'You will want to change the file path to match the Workbook you are trying to get the data from.</p>
+<p>FilePath = "C:YourFolderPath\WorkbookName.xlsx"</p>
+<br>
+<p>'You will want to change the value of i in the For i = 10 to match your starting row of where to start counting from.</p>
+<p>Set SourceFile = Workbooks.Open(FilePath)</p>
+<br>
+<p>RowLen = SourceFile.Worksheets(1).Cells(Rows.Count, "A").End(xlUp).Row</p>
+<br>
+<p>For i = 10 to RowLen</p>
+<p>If Len(Trim(SourceFile.Worksheets(1).Cells(i, 1).Value)) > 0 Then</p>
+<p>BlankRows = BlankRows + 1</p>
+<p>End If</p>
+<p>Next i</p>
+<br>
+<p>'Change the YourWorkbookName to the actual workbook name below here.</p>
+<p>Workbooks("YourWorkbookName.xlsm").Activate</p>
+<p>'Change the Worksheet(1) to the worksheet number you want the number on. Change the A1 value to the cell reference you want the number in.</p>
+<p>Worksheets(1).Range("A1").Value = BlankRows</p>
+<br>
+<p>End Sub</p>
+<hr>    
+<br>
+
+
+
+
+
