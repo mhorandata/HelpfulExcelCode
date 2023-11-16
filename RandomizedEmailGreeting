@@ -1,0 +1,62 @@
+Sub SendRandomizedEmail()
+    Dim OutApp As Object
+    Dim OutMail As Object
+    Dim i As Integer
+    Dim MsgVariations(1 To 25) As String
+    Dim MsgIndex As Integer
+    
+    ' Define 25 random professional variations of the phrase
+MsgVariations(1) = "Wishing you a fantastic weekend!"
+MsgVariations(2) = "May your weekend be filled with joy and relaxation."
+MsgVariations(3) = "Wishing you a productive week ahead."
+MsgVariations(4) = "Hope you have a successful and fulfilling weekend."
+MsgVariations(5) = "May your weekend be filled with positivity and relaxation."
+MsgVariations(6) = "Sending you good vibes for a fantastic weekend!"
+MsgVariations(7) = "Have a wonderful and rejuvenating weekend."
+MsgVariations(8) = "Wishing you a joyous and stress-free weekend."
+MsgVariations(9) = "May your weekend be filled with laughter and happiness."
+MsgVariations(10) = "Sending you warm wishes for a great weekend ahead."
+MsgVariations(11) = "Hope your weekend is as amazing as you are!"
+MsgVariations(12) = "Wishing you a weekend full of exciting adventures."
+MsgVariations(13) = "May your weekend be filled with positive energy and good company."
+MsgVariations(14) = "Have a weekend filled with joy, relaxation, and good times."
+MsgVariations(15) = "Wishing you a delightful and memorable weekend."
+MsgVariations(16) = "May your weekend be filled with moments of pure happiness."
+MsgVariations(17) = "Sending you positive vibes for a wonderful weekend ahead."
+MsgVariations(18) = "Have a fantastic weekend filled with laughter and joy."
+MsgVariations(19) = "Wishing you a weekend that's as amazing as you are!"
+MsgVariations(20) = "May your weekend be filled with sunshine and good times."
+MsgVariations(21) = "Sending you best wishes for a relaxing and enjoyable weekend."
+MsgVariations(22) = "Hope your weekend is filled with love, laughter, and good company."
+MsgVariations(23) = "Wishing you a weekend of fun, relaxation, and positive vibes."
+MsgVariations(24) = "May your weekend be as bright and cheerful as your smile."
+MsgVariations(25) = "Sending you warm wishes for a fantastic weekend ahead."
+    
+    ' Select a random variation
+    MsgIndex = Int((25 * Rnd) + 1)
+    Dim MessageText As String
+    MessageText = MsgVariations(MsgIndex)
+    
+    ' Prompt user with message box
+    If MsgBox("Is the message okay?" & vbCrLf & MessageText, vbYesNo + vbQuestion, "Confirmation") = vbYes Then
+        ' Create Outlook objects
+        Set OutApp = CreateObject("Outlook.Application")
+        Set OutMail = OutApp.CreateItem(0)  ' 0 represents olMailItem
+        
+        ' Compose the email
+        With OutMail
+            .To = "putyour@emailhere.com"
+            .CC = "putan@emailhere.com"
+            .Subject = "Weekend Greetings"
+            .Body = MessageText
+            ' Display the email before sending
+            .Display
+            ' Uncomment the line below to automatically send the email
+            '.Send
+        End With
+        
+        ' Release Outlook objects from memory
+        Set OutMail = Nothing
+        Set OutApp = Nothing
+    End If
+End Sub
